@@ -24,6 +24,8 @@ static uint16_t repeat = 0;
 static uint16_t color = 0;
 static uint32_t reminder_time = 0;
 
+String morse_chars;
+
 //***********************************************************************
 //Initialise the LEDs and clear the display
 //(this happens before trying to connect so that they don't get stuck on)
@@ -426,6 +428,72 @@ void claim_sequence(void)
     begin = millis();
     grid.show();
   }
+  return;
+}
+
+void morse_sequence(void)
+{
+  //**********************************************
+  //Check if enough time has passed between frames
+  if(time_since(begin) < custom_animation_framerate)
+  {
+    return;
+  }
+
+  //*****************************************
+  //Check if we're just starting the sequence
+  if(state_transition_flag)
+  {
+    grid.setBrightness(grid_brightness);
+    state_transition_flag = 0;
+    frame = 0;
+  }
+  begin = millis();
+
+  //*****************************************
+  //Update the LEDs to display the next frame
+  uint32_t morse_dot[16] = {
+    0x000000,0x000000,0x000000,0x000000,
+    0x000000,0x00ff00,0x00ff00,0x000000,
+    0x000000,0x00ff00,0x00ff00,0x000000,
+    0x000000,0x000000,0x000000,0x000000
+  };
+  uint32_t morse_dash[16] = {
+    0x000000,0x000000,0x000000,0x000000,
+    0xff0000,0xff0000,0xff0000,0xff0000,
+    0xff0000,0xff0000,0xff0000,0xff0000,
+    0x000000,0x000000,0x000000,0x000000
+  };
+  uint32_t morse_space[16] = {
+    0x000000,0x000000,0x000000,0x000000,
+    0x000000,0x000000,0x000000,0x000000,
+    0x000000,0x000000,0x000000,0x000000,
+    0x000000,0x000000,0x000000,0x000000
+  };
+
+   uint32_t* morse_part;
+
+   if (morse_chars[frame] == '.') {
+     morse_part = morse_dot;
+   } else if (morse_chars[frame] == '-') {
+     morse_part = morse_dash;
+   } else {
+     morse_part = morse_space;
+   }
+
+  for(uint8_t i=0; i<grid.numPixels(); i++)
+  {
+    grid.setPixelColor(pixel_map[i],morse_part[i]);
+  }
+  grid.show();
+
+  //*********************************************************************
+  //Set the animation to loop by starting from the beginning once it ends
+  if(++frame >= strlen(morse_chars))
+  {
+    frame = 0;
+  }
+
   return;
 }
 

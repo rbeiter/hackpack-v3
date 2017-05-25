@@ -20,6 +20,8 @@ extern uint8_t block_jitter;
 int parse_command(String command);
 uint8_t send_packet(void);
 String search_string(String data, char delimiter, int index);
+String morse_for_character(char c);
+String padded_morse_for_string(String s);
 void awake(uint8_t cmd);
 
 #endif

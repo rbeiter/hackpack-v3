@@ -20,6 +20,8 @@ extern uint32_t custom_animation_lut[][16];
 extern uint16_t custom_animation_framerate;
 extern uint16_t custom_animation_length;
 
+extern String morse_chars;
+
 //*********************
 //Pixel color variables
 extern Adafruit_NeoPixel grid;
@@ -42,6 +44,7 @@ void alert2_sequence(void);
 void alert3_sequence(void);
 void claim_sequence(void);
 void custom_sequence(void);
+void morse_sequence(void);
 void startup_display(void);
 uint32_t time_since(uint32_t start_time);
 

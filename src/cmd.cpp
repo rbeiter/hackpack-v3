@@ -60,6 +60,18 @@ int parse_command(String command)
         }
         state_transition();
     }
+    else if (cmd_str == "morse")
+    {
+      String phrase = search_string(command, ',', 1);
+
+      #ifdef HACKPACK_DEBUG
+      Serial.println("Morse: ");
+      Serial.println(phrase);
+      #endif
+      CURRENT_STATE = MORSE;
+      morse_chars = padded_morse_for_string(phrase);
+      state_transition();
+    }
     else if (cmd_str == "brightness")
     {
       String bright_str = search_string(command, ',', 1);
@@ -251,6 +263,9 @@ uint8_t send_packet(void)
       case(CUSTOM):
           Serial1.print("custom");
       break;
+      case(MORSE):
+          Serial1.print("morse");
+      break;
       default:
           Serial1.print("unknown");
       break;
@@ -317,6 +332,67 @@ String search_string(String data, char delimiter, int index)
     {
       return("");
     }
+}
+
+String morse_for_character(char c)
+{
+  switch (c) {
+    case 'a': return ".-";
+    case 'b': return "-...";
+    case 'c': return "-.-.";
+    case 'd': return "-..";
+    case 'e': return ".";
+    case 'f': return "..-.";
+    case 'g': return "--.";
+    case 'h': return "....";
+    case 'i': return "..";
+    case 'j': return ".---";
+    case 'k': return "-.-";
+    case 'l': return ".-..";
+    case 'm': return "--";
+    case 'n': return "-.";
+    case 'o': return "---";
+    case 'p': return ".--.";
+    case 'q': return "--.-";
+    case 'r': return ".-.";
+    case 's': return "...";
+    case 't': return "-";
+    case 'u': return "..-";
+    case 'v': return "...-";
+    case 'w': return ".--";
+    case 'x': return "-..-";
+    case 'y': return "-.--";
+    case 'z': return "--..";
+    case '1': return ".----";
+    case '2': return "..---";
+    case '3': return "...--";
+    case '4': return "....-";
+    case '5': return ".....";
+    case '6': return "-....";
+    case '7': return "--...";
+    case '8': return "---..";
+    case '9': return "----.";
+    case '0': return "-----";
+    default: return "";
+  }
+}
+
+String padded_morse_for_string(String s)
+{
+  String result = "";
+  for (int ndx=0; ndx < strlen(s); ndx++) {
+    if (s[ndx] == ' ') {
+      result = result + "    ";
+      continue;
+    }
+    String part = morse_for_character(s[ndx]);
+    for (int part_ndx=0; part_ndx < strlen(part); part_ndx++) {
+      result = result + part[part_ndx] + " ";
+    }
+    result = result + "  ";
+  }
+  result = result + "    ";
+  return result;
 }
 
 void awake(uint8_t cmd)

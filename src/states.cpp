@@ -111,6 +111,9 @@ void run_display_state(void)
     case(CUSTOM):
       custom_sequence();
     break;
+    case(MORSE):
+      morse_sequence();
+    break;
   }
   return;
 }

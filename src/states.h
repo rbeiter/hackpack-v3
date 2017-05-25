@@ -11,6 +11,7 @@ typedef enum states
   BLOCK,
   CHASE,
   FADE,
+  MORSE,
   CUSTOM
 }SYSTEM_STATE;
 
