@@ -387,7 +387,11 @@ String padded_morse_for_string(String s)
     }
     String part = morse_for_character(s[ndx]);
     for (int part_ndx=0; part_ndx < strlen(part); part_ndx++) {
-      result = result + part[part_ndx] + " ";
+      String part_value = part.substring(part_ndx, part_ndx+1);
+      if (part_value == "-") {
+        part_value = "--";
+      }
+      result = result + part_value + " ";
     }
     result = result + "  ";
   }
